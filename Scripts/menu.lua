@@ -1,11 +1,11 @@
 -- Requirements
 local composer = require "composer"
 local widget = require "widget"
-
+local moduleShip = require "Scripts.Objects.ship"
 -- Variables local to scene
 local scene = composer.newScene()
 
-local background, background2, background3
+local background, background2, background3, ship
 local centerX, centerY = display.contentCenterX, display.contentCenterY
 local contentW, contentH = display.contentWidth, display.contentHeight
 local scrollSpeed = .5
@@ -59,7 +59,7 @@ function scene:show( event )
     Runtime:addEventListener("enterFrame", enterFrame)
     --transition.to( background, { y = 1000, time = 5000 , onComplete = moveCoverBackground } )
   elseif ( phase == "did" ) then
-
+    moduleShip.create( ship, {} )
   end
 end
 

@@ -1,29 +1,33 @@
 -- Requirements
 local composer = require "composer"
-local playButton
+
 -- Variables local to scene
 local scene = composer.newScene()
+
+-- biến playText
+local playText
+--hàm gọi đến cảnh menu
+local function goToMenu()
+    composer.gotoScene("Scripts.menu")
+end
 
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
 
-  --hình nền
-  local backgroungIntro = display.newImage("Assets/Images/backIntro.png", 320, 480)
-  backgroungIntro.x = display.contentCenterX
-  backgroungIntro.y = display.contentCenterY
-  backgroungIntro:toBack()
+  --backgroudIntro
+  local backgroudIntro = display.newImage(sceneGroup,"Assets/Images/backIntro.png", 320, 480)
+  backgroudIntro.x = display.contentCenterX
+  backgroudIntro.y = display.contentCenterY
+  backgroudIntro:toBack()
+
   --playButton
-  playButton = display.newText( "Menu", display.contentCenterX, display.contentCenterY, native.systemFont, 44)
-	playButton:setFillColor( 255, 255, 255 )
-
-  --sự kiện tap
-
+  playText = display.newText(sceneGroup, "CHẠM ĐỂ BẮT ĐẦU", display.contentCenterX, 400, native.systemFontBold, 20)
+	playText:setFillColor( 255, 255, 255 )
 
 end
 
 local function enterFrame(event)
   local elapsed = event.time
-
 end
 
 function scene:show( event )
@@ -31,11 +35,8 @@ function scene:show( event )
   if ( phase == "will" ) then
     Runtime:addEventListener("enterFrame", enterFrame)
   elseif ( phase == "did" ) then
-      local function goToMenu()
-          composer.gotoScene("Scripts.menu")
-      end
-
-      playButton:addEventListener("tap", goToMenu )
+      --sự kiện tap
+      playText:addEventListener("tap", goToMenu )
   end
 end
 
@@ -45,6 +46,7 @@ function scene:hide( event )
 
   elseif ( phase == "did" ) then
     Runtime:removeEventListener("enterFrame", enterFrame)
+    playText:removeSelf()
   end
 end
 

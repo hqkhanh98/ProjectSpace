@@ -7,6 +7,12 @@ local scene = composer.newScene()
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
 
+  --hình nền
+  local backgroungIntro = display.newImage("Assets/Images/backIntro.png", 320, 480)
+  backgroungIntro.x = display.contentCenterX
+  backgroungIntro.y = display.contentCenterY
+
+
 end
 
 local function enterFrame(event)

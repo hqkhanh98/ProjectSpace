@@ -7,4 +7,4 @@
 -- Your code here
 local composer = require "composer"
 
-composer.gotoScene("Scripts.Intro")
+composer.gotoScene("Scripts.menu")

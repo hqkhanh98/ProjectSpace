@@ -1,0 +1,37 @@
+-- -- ScrollView listener
+-- local function scrollListener( event )
+--
+--     local phase = event.phase
+--     if ( phase == "began" ) then print( "Scroll view was touched" )
+--     elseif ( phase == "moved" ) then print( "Scroll view was moved" )
+--     elseif ( phase == "ended" ) then print( "Scroll view was released" )
+--     end
+--
+--     -- In the event a scroll limit is reached...
+--     if ( event.limitReached ) then
+--         if ( event.direction == "up" ) then print( "Reached bottom limit" )
+--         elseif ( event.direction == "down" ) then print( "Reached top limit" )
+--         elseif ( event.direction == "left" ) then print( "Reached right limit" )
+--         elseif ( event.direction == "right" ) then print( "Reached left limit" )
+--         end
+--     end
+--
+--     return true
+-- end
+--
+-- -- Create the widget
+-- local scrollView = widget.newScrollView(
+--     {
+--         top = 0,
+--         left = 0,
+--         width = 360,
+--         height = 480,
+--         topPadding = 0,
+--         bottomPadding = 500,
+--         listener = scrollListener,
+--         horizontalScrollDisabled = true
+--     }
+-- )
+--
+-- scrollView:insert( background )
+-- scrollView:scrollTo( "bottom", { time=1200 } )

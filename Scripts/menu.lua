@@ -13,7 +13,10 @@ local uiGroup = display.newGroup()
 
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
-  background = display.newImage( backGroup, "Assets/Images/backMenu.png", centerX, centerY)
+  background = display.newImageRect( backGroup, "Assets/Images/menu.png", 448, 6080)
+  background.alpha = .1
+  background.x = display.contentCenterX
+  background.y = -2200
 end
 
 local function enterFrame(event)
@@ -25,6 +28,7 @@ function scene:show( event )
   local phase = event.phase
   if ( phase == "will" ) then
     Runtime:addEventListener("enterFrame", enterFrame)
+    transition.to( background, { alpha = 1, time = 2000 } )
   elseif ( phase == "did" ) then
 
   end

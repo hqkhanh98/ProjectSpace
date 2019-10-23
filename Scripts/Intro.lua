@@ -4,8 +4,11 @@ local composer = require "composer"
 -- Variables local to scene
 local scene = composer.newScene()
 
--- biến playText
+-- biến playText, title
 local playText
+local title
+--x,y
+local contentX,contentY = display.contentCenterX, display.contentCenterY
 --hàm gọi đến cảnh menu
 local function goToMenu()
     composer.gotoScene("Scripts.menu")
@@ -16,14 +19,19 @@ function scene:create( event )
 
   --backgroudIntro
   local backgroudIntro = display.newImage(sceneGroup,"Assets/Images/backIntro.png", 320, 480)
-  backgroudIntro.x = display.contentCenterX
-  backgroudIntro.y = display.contentCenterY
+  backgroudIntro.x = contentX
+  backgroudIntro.y = contentY
   backgroudIntro:toBack()
-
-  --playButton
-  playText = display.newText(sceneGroup, "CHẠM ĐỂ BẮT ĐẦU", display.contentCenterX, 400, native.systemFontBold, 20)
+  --title(nữa kiếm hình)
+  title = display.newText(sceneGroup, "SPACESHIP WAR", contentX, -10, native.systemFontBold, 20)
+	title:setFillColor(0,255,0)
+  --playText
+  playText = display.newText(sceneGroup, "CHẠM ĐỂ BẮT ĐẦU", contentX, -10, native.systemFontBold, 20)
 	playText:setFillColor( 255, 255, 255 )
-
+  --hiệu ứng playText
+  transition.to( title, {time=1500, delay=900, alpha=1, x=contentX, y=250} )
+  --hiệu ứng playText
+  transition.to( playText, {time=1000, alpha=1, x=contentX, y=400} )
 end
 
 local function enterFrame(event)
@@ -46,6 +54,7 @@ function scene:hide( event )
 
   elseif ( phase == "did" ) then
     Runtime:removeEventListener("enterFrame", enterFrame)
+
     playText:removeSelf()
   end
 end

@@ -6,3 +6,5 @@
 
 -- Your code here
 local composer = require "composer"
+
+composer.gotoScene("Scripts.Intro")

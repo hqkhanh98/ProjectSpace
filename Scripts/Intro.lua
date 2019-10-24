@@ -9,6 +9,8 @@ local playText
 local title
 --x,y
 local contentX,contentY = display.contentCenterX, display.contentCenterY
+
+local font = "Assets/Fonts/kenvector_future.ttf"
 --hàm gọi đến cảnh menu
 local function goToMenu()
     composer.gotoScene("Scripts.menu")
@@ -23,11 +25,11 @@ function scene:create( event )
   backgroudIntro.y = contentY
   backgroudIntro:toBack()
   --title(nữa kiếm hình)
-  title = display.newText(sceneGroup, "SPACESHIP WAR", contentX, -10, native.systemFontBold, 20)
+  title = display.newText(sceneGroup, "SPACESHIP WAR", contentX, -10, font, 20)
 	title:setFillColor(0,255,0)
 
   --playText
-  playText = display.newText(sceneGroup, "CHẠM ĐỂ BẮT ĐẦU", -50, 400, native.systemFontBold, 20)
+  playText = display.newText(sceneGroup, "TOUCH TO START", -50, 400, font, 20)
 	playText:setFillColor( 255, 255, 255 )
   playText.alpha = 0.1
 
@@ -50,9 +52,15 @@ end
 local function enterFrame(event)
   local elapsed = event.time
 end
+function scaleTitle()
+   transition.from( playText, { time = 1200, xScale = 0.899, yScale = 0.899, onComplete = scaleTitle} )
+end
 function blink()
   --nhấp nháy
   transition.blink( playText, { time=1200 } )
+  transition.from( playText, { time = 1200, xScale = 0.899, yScale = 0.899,
+  onComplete = scaleTitle
+  } )
 end
 function scene:show( event )
   local phase = event.phase

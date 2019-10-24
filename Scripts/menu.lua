@@ -7,7 +7,7 @@ local moduleShip = require "Scripts.Objects.ship"
 local moduleBullet = require "Scripts.Objects.bullet"
 physics.start()
 physics.setGravity( 0, 0 )
-physics.setDrawMode("debug")
+physics.setDrawMode("normal")
 -- Variables local to scene
 local scene = composer.newScene()
 
@@ -16,7 +16,7 @@ local bulletTables = {}
 
 local centerX, centerY = display.contentCenterX, display.contentCenterY
 local contentW, contentH = display.contentWidth, display.contentHeight
-local scrollSpeed = 2
+local scrollSpeed = .8
 -- Init group
 local backGroup = display.newGroup()
 local uiGroup = display.newGroup()

@@ -3,7 +3,7 @@
 -- local sprite = display.newSprite( myImageSheet , {frames={sheetInfo:getFrameIndex("sprite")}} )
 local incShip = require "Scripts.Sheets.ship-blue"
 local physics = require "physics"
-
+physics.start()
 local M = {}
 
 function M.create( ship, options )

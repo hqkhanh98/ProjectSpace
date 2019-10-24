@@ -25,13 +25,27 @@ function scene:create( event )
   --title(nữa kiếm hình)
   title = display.newText(sceneGroup, "SPACESHIP WAR", contentX, -10, native.systemFontBold, 20)
 	title:setFillColor(0,255,0)
+  --hiệu ứng title
+  transition.to( title, {time=1000,  alpha=1, x=contentX, y=250} )
   --playText
-  playText = display.newText(sceneGroup, "CHẠM ĐỂ BẮT ĐẦU", contentX, -10, native.systemFontBold, 20)
+  playText = display.newText(sceneGroup, "CHẠM ĐỂ BẮT ĐẦU", -50, 400, native.systemFontBold, 20)
 	playText:setFillColor( 255, 255, 255 )
   --hiệu ứng playText
-  transition.to( title, {time=1500, delay=900, alpha=1, x=contentX, y=250} )
-  --hiệu ứng playText
-  transition.to( playText, {time=1000, alpha=1, x=contentX, y=400} )
+  transition.to( playText, {time=1500, delay=900,alpha=1, x=contentX, y=400} )
+  --hiệu ứng bông tuyết
+  local json = require( "json" )
+  local filePath = system.pathForFile( "Scripts/Sheets/particle_texture1.json" )
+  local f = io.open( filePath, "r" )
+  local emitterData = f:read( "*a" )
+  f:close()
+
+  local emitterParams = json.decode( emitterData)
+
+  local emitter = display.newEmitter( emitterParams )
+  emitter.x = display.contentCenterX
+  emitter.y = display.contentCenterY
+
+
 end
 
 local function enterFrame(event)
@@ -45,6 +59,8 @@ function scene:show( event )
   elseif ( phase == "did" ) then
       --sự kiện tap
       playText:addEventListener("tap", goToMenu )
+      --hiệu ứng nhấp nhảy
+      transition.blink( playText, { time=1200 } )
   end
 end
 

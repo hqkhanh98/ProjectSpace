@@ -1,20 +1,29 @@
 -- Requirements
+
 local composer = require "composer"
 local widget = require "widget"
+local physics = require "physics"
 local moduleShip = require "Scripts.Objects.ship"
+local moduleBullet = require "Scripts.Objects.bullet"
+physics.start()
+physics.setGravity( 0, 0 )
+physics.setDrawMode("debug")
 -- Variables local to scene
 local scene = composer.newScene()
 
-local background, background2, background3, ship
+local background, background2, background3, ship, bulletLoop, bullet
+local bulletTables = {}
+
 local centerX, centerY = display.contentCenterX, display.contentCenterY
 local contentW, contentH = display.contentWidth, display.contentHeight
-local scrollSpeed = .5
+local scrollSpeed = 2
 -- Init group
 local backGroup = display.newGroup()
 local uiGroup = display.newGroup()
 
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
+  physics.pause()
   background = display.newImageRect( backGroup, "Assets/Images/menu.png", 360, 480)
   --background.alpha = .1
   background.x = contentW * 0.5
@@ -28,10 +37,6 @@ function scene:create( event )
   background3.x = contentW * 0.5
   background3.y = background2.y + 480
 
-  -- coverBackground = display.newImageRect( backGroup, "Assets/Images/menu.png", 360, 480)
-  -- coverBackground.x = display.contentCenterX
-  -- coverBackground.y = background.y - background.height
-  -- coverBackground:toBack()
   sceneGroup:insert( backGroup )
 end
 
@@ -51,15 +56,58 @@ local function enterFrame(event)
   if ( background3.y + background3.contentWidth ) > 1040 then
     background3:translate( 0, -960 )
   end
+
+end
+
+local function onCollision( event )
+  if ( event.phase == "began" ) then
+    local obj_1 = event.object1
+    print(obj_1.name)
+    local obj_2 = event.object2
+    if (( obj_1.name == "bullet" and obj_2.name == "destroy" ) or
+       ( obj_1.name == "destroy" and obj_2.name == "bullet" ))then
+          if ( obj_1.name == "bullet" ) then --or thisBullet.name == obj_2.name ) then
+            obj_1:removeSelf()
+          elseif obj_2.name == "bullet" then
+            obj_2:removeSelf()
+          end
+    end
+  end
+end
+
+local function createBullet()
+  bullet = moduleBullet.create( bullet, { x = ship.x, y = ship.y } )
+
+  bullet:toBack()
+
+  uiGroup:insert( bullet )
+
+  physics.addBody( bullet, "dynamic", {isSensor = true, bounce = 0} )
+  bullet.name = "bullet"
+  table.insert( bulletTables, bullet )
+
+  bullet:applyLinearImpulse( 0, -0.05, bullet.x, bullet.y )
+
+  --display.remove( bullet )
+end
+function destroyBullets()
+  local destroyBar = display.newRect(130, 60, 700, .5)
+  destroyBar.name = "destroy"
+  physics.addBody( destroyBar, "static", {bounce = 0} )
 end
 
 function scene:show( event )
   local phase = event.phase
   if ( phase == "will" ) then
-    Runtime:addEventListener("enterFrame", enterFrame)
+
     --transition.to( background, { y = 1000, time = 5000 , onComplete = moveCoverBackground } )
   elseif ( phase == "did" ) then
-    moduleShip.create( ship, {} )
+    physics.start()
+    ship = moduleShip.create( ship, {} )
+    bulletLoop = timer.performWithDelay( 300, createBullet, 0 )
+    destroyBullets()
+    Runtime:addEventListener("enterFrame", enterFrame)
+    Runtime:addEventListener( "collision", onCollision )
   end
 end
 

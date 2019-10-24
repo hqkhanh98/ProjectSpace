@@ -25,13 +25,12 @@ function scene:create( event )
   --title(nữa kiếm hình)
   title = display.newText(sceneGroup, "SPACESHIP WAR", contentX, -10, native.systemFontBold, 20)
 	title:setFillColor(0,255,0)
-  --hiệu ứng title
-  transition.to( title, {time=1000,  alpha=1, x=contentX, y=250} )
+
   --playText
   playText = display.newText(sceneGroup, "CHẠM ĐỂ BẮT ĐẦU", -50, 400, native.systemFontBold, 20)
 	playText:setFillColor( 255, 255, 255 )
-  --hiệu ứng playText
-  transition.to( playText, {time=1500, delay=900,alpha=1, x=contentX, y=400} )
+  playText.alpha = 0.1
+
   --hiệu ứng bông tuyết
   local json = require( "json" )
   local filePath = system.pathForFile( "Scripts/Sheets/particle_texture1.json" )
@@ -51,7 +50,10 @@ end
 local function enterFrame(event)
   local elapsed = event.time
 end
-
+function blink()
+  --nhấp nháy
+  transition.blink( playText, { time=1200 } )
+end
 function scene:show( event )
   local phase = event.phase
   if ( phase == "will" ) then
@@ -59,8 +61,11 @@ function scene:show( event )
   elseif ( phase == "did" ) then
       --sự kiện tap
       playText:addEventListener("tap", goToMenu )
-      --hiệu ứng nhấp nhảy
-      transition.blink( playText, { time=1200 } )
+      --hiệu ứng title
+      transition.to( title, {time=1000,  alpha=1, x=contentX, y=250} )
+      --hiệu ứng playText
+      transition.to( playText, {time=1500, delay=900, alpha=1, x=contentX, y=400, onComplete = blink} )
+
   end
 end
 

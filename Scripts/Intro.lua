@@ -13,7 +13,7 @@ local contentX,contentY = display.contentCenterX, display.contentCenterY
 local font = "Assets/Fonts/kenvector_future.ttf"
 --hàm gọi đến cảnh menu
 local function goToMenu()
-    composer.gotoScene("Scripts.testMenu")
+    composer.gotoScene("Scripts.menu")
 end
 
 function scene:create( event )

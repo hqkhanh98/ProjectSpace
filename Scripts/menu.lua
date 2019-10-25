@@ -7,7 +7,7 @@ local moduleShip = require "Scripts.Objects.ship"
 local moduleBullet = require "Scripts.Objects.bullet"
 physics.start()
 physics.setGravity( 0, 0 )
-physics.setDrawMode("hybrid")
+physics.setDrawMode("normal")
 -- Variables local to scene
 local scene = composer.newScene()
 
@@ -76,8 +76,11 @@ local function onCollision( event )
 end
 
 local function createBullet()
-  bullet = moduleBullet.create( bullet, { x = ship.x, y = ship.y } )
-  bullet2 = moduleBullet.create( bullet, { x = ship.x + 10, y = ship.y } )
+  bullet = display.newImageRect( "Assets/Images/electrons.png", 10, 10)
+  bullet2 = display.newImageRect( "Assets/Images/electrons.png", 10, 10)
+  bullet2.x = centerX
+  bullet2.y = centerY
+  bullet2:setFillColor(0, 255, 255)
   bullet:toBack()
   bullet2:toBack()
   uiGroup:insert( bullet )
@@ -92,12 +95,14 @@ local function createBullet()
   bullet2.isFixedRotation = true
   table.insert( bulletTables, bullet )
   table.insert( bulletTables, bullet2 )
-  bullet:applyLinearImpulse( 0, -0.01, ship.x, ship.y + 10 )
-  bullet2:applyLinearImpulse( 0, -0.01, ship.x, ship.y + 10 )
+  bullet2:applyForce( 0, -0.15, ship.x, ship.y + 10 )
+  --bullet:rotate( -0.5 )
+  --bullet2:applyForce( 0, 1, ship.x, ship.y + 10 )
+  --bullet2:rotate( 0.5 )
   --display.remove( bullet )
 end
 function destroyBullets()
-  local destroyBar = display.newRect(130, -10, 700, .5)
+  local destroyBar = display.newRect(130, 5, 700, .5)
   destroyBar.name = "destroy"
   physics.addBody( destroyBar, "static", {bounce = 0} )
 end
@@ -105,12 +110,23 @@ end
 function scene:show( event )
   local phase = event.phase
   if ( phase == "will" ) then
+    local json = require( "json" )
+    local filePath = system.pathForFile( "Scripts/Sheets/my_galaxy.json" )
+    local f = io.open( filePath, "r" )
+    local emitterData = f:read( "*a" )
+    f:close()
 
+    local emitterParams = json.decode( emitterData)
+
+    local emitter = display.newEmitter( emitterParams )
+    emitter.x = centerX
+    emitter.y = centerY
     --transition.to( background, { y = 1000, time = 5000 , onComplete = moveCoverBackground } )
   elseif ( phase == "did" ) then
     physics.start()
-    ship = moduleShip.create( ship, {} )
-    bulletLoop = timer.performWithDelay( 300, createBullet, 0 )
+    ship = moduleShip.create( ship, { x = centerX, y = centerY ,type = "figure" } )
+    bulletLoop = timer.performWithDelay( 180, createBullet, 0 )
+
     destroyBullets()
     Runtime:addEventListener("enterFrame", enterFrame)
     Runtime:addEventListener( "collision", onCollision )

@@ -2,6 +2,7 @@
 -- local myImageSheet = graphics.newImageSheet( "mysheet.png", sheetInfo:getSheet() )
 -- local sprite = display.newSprite( myImageSheet , {frames={sheetInfo:getFrameIndex("sprite")}} )
 local incShip = require "Scripts.Sheets.ship-blue"
+
 local M = {}
 
 function M.create( ship, options )
@@ -37,7 +38,12 @@ function M.create( ship, options )
   	end -- End if check
   	return true
   end
-  Runtime:addEventListener( "touch", onDrag )
+  if type == "normal" then
+      Runtime:addEventListener( "touch", onDrag )
+  elseif type == "figure" then
+
+  end
+
   return ship
 end
 

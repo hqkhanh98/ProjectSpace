@@ -4,6 +4,7 @@ local composer = require "composer"
 local widget = require "widget"
 local physics = require "physics"
 local moduleShip = require "Scripts.Objects.ship"
+local moduleShip = require "Scripts.Objects.ship"
 local moduleBullet = require "Scripts.Objects.bullet"
 physics.start()
 physics.setGravity( 0, 0 )
@@ -110,6 +111,7 @@ function scene:show( event )
   elseif ( phase == "did" ) then
     physics.start()
     ship = moduleShip.create( ship, {} )
+
     bulletLoop = timer.performWithDelay( 300, createBullet, 0 )
     destroyBullets()
     Runtime:addEventListener("enterFrame", enterFrame)

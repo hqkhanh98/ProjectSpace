@@ -5,22 +5,22 @@ local composer = require "composer"
 local scene = composer.newScene()
 
 -- biến playText, title
-local playText
-local title
+local playText, backgroudIntro, title
+local emitter
 --x,y
 local contentX,contentY = display.contentCenterX, display.contentCenterY
 
 local font = "Assets/Fonts/kenvector_future.ttf"
 --hàm gọi đến cảnh menu
 local function goToMenu()
-    composer.gotoScene("Scripts.menu")
+    composer.gotoScene("Scripts.testMenu")
 end
 
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
 
   --backgroudIntro
-  local backgroudIntro = display.newImage(sceneGroup,"Assets/Images/backIntro.png", 320, 480)
+  backgroudIntro = display.newImage(sceneGroup,"Assets/Images/backIntro.png", 320, 480)
   backgroudIntro.x = contentX
   backgroudIntro.y = contentY
   backgroudIntro:toBack()
@@ -42,7 +42,7 @@ function scene:create( event )
 
   local emitterParams = json.decode( emitterData)
 
-  local emitter = display.newEmitter( emitterParams )
+  emitter = display.newEmitter( emitterParams )
   emitter.x = display.contentCenterX
   emitter.y = display.contentCenterY
 
@@ -68,7 +68,7 @@ function scene:show( event )
     Runtime:addEventListener("enterFrame", enterFrame)
   elseif ( phase == "did" ) then
       --sự kiện tap
-      playText:addEventListener("tap", goToMenu )
+      backgroudIntro:addEventListener("tap", goToMenu )
       --hiệu ứng title
       transition.to( title, {time=1000,  alpha=1, x=contentX, y=250} )
       --hiệu ứng playText
@@ -101,6 +101,7 @@ function scene:hide( event )
     Runtime:removeEventListener("enterFrame", enterFrame)
 
     playText:removeSelf()
+    emitter:removeSelf()
   end
 end
 

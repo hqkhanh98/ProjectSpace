@@ -19,10 +19,26 @@ function M.create( ship, options )
 
   ship = display.newSprite( sheet , { frames={ 4 } } )
   ship.x, ship.y = x, y
+  function onDrag( event )
 
+  	local check = event.phase
+
+  	if ( "began" == check ) then
+  		--display.currentStage:setFocus( ship ) -- Set touch focus on the ship
+  		ship.touchOffsetX = event.x - ship.x -- Store initial offset position
+      ship.touchOffsetY = event.y - ship.y
+  	elseif ( "moved" == check ) then
+  		-- Move the ship to the new touch position
+  		ship.x = event.x - ship.touchOffsetX
+  	  ship.y = event.y - ship.touchOffsetY
+  	elseif ( "ended" == check or "cancelled" == check ) then
+  		-- Release touch focus on the ship
+  		--display.currentStage:setFocus( nil )
+  	end -- End if check
+  	return true
+  end
+  Runtime:addEventListener( "touch", onDrag )
   return ship
 end
-
-
 
 return M

@@ -7,7 +7,7 @@ local moduleShip = require "Scripts.Objects.ship"
 local moduleBullet = require "Scripts.Objects.bullet"
 physics.start()
 physics.setGravity( 0, 0 )
-physics.setDrawMode("normal")
+physics.setDrawMode("hybrid")
 -- Variables local to scene
 local scene = composer.newScene()
 
@@ -77,21 +77,27 @@ end
 
 local function createBullet()
   bullet = moduleBullet.create( bullet, { x = ship.x, y = ship.y } )
-
+  bullet2 = moduleBullet.create( bullet, { x = ship.x + 10, y = ship.y } )
   bullet:toBack()
-
+  bullet2:toBack()
   uiGroup:insert( bullet )
-
-  physics.addBody( bullet, "dynamic", {isSensor = true, bounce = 0} )
+  uiGroup:insert( bullet2 )
+  physics.addBody( bullet, "dynamic", {isSensor = true, bounce = 0,
+                  box = { halfWidth=2, halfHeight=5 }} )
+  physics.addBody( bullet2, "dynamic", {isSensor = true, bounce = 0,
+                  box = { halfWidth=2, halfHeight=5 }} )
   bullet.name = "bullet"
+  bullet2.name = "bullet"
+  bullet.isFixedRotation = true
+  bullet2.isFixedRotation = true
   table.insert( bulletTables, bullet )
-
-  bullet:applyLinearImpulse( 0, -0.05, bullet.x, bullet.y )
-
+  table.insert( bulletTables, bullet2 )
+  bullet:applyLinearImpulse( 0, -0.01, ship.x, ship.y + 10 )
+  bullet2:applyLinearImpulse( 0, -0.01, ship.x, ship.y + 10 )
   --display.remove( bullet )
 end
 function destroyBullets()
-  local destroyBar = display.newRect(130, 60, 700, .5)
+  local destroyBar = display.newRect(130, -10, 700, .5)
   destroyBar.name = "destroy"
   physics.addBody( destroyBar, "static", {bounce = 0} )
 end

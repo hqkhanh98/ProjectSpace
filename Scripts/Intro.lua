@@ -73,9 +73,25 @@ function scene:show( event )
       transition.to( title, {time=1000,  alpha=1, x=contentX, y=250} )
       --hiệu ứng playText
       transition.to( playText, {time=1500, delay=900, alpha=1, x=contentX, y=400, onComplete = blink} )
-
+      -- Add the key event listener
+      Runtime:addEventListener( "key", onKeyEvent )
   end
 end
+-- Called when a key event has been received
+function onKeyEvent( event )
+
+    -- If the "back" key was pressed on Android, prevent it from backing out of the app
+    if ( event.keyName == "numPad1" ) then
+        if event.phase == "up" then
+            composer.gotoScene( "Scripts.testMenu" )
+        end
+    end
+
+    -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
+    -- This lets the operating system execute its default handling of the key
+    return false
+end
+
 
 function scene:hide( event )
   local phase = event.phase

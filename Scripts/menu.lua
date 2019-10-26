@@ -62,7 +62,7 @@ end
 local function onCollision( event )
   if ( event.phase == "began" ) then
     local obj_1 = event.object1
-    print(obj_1.name)
+
     local obj_2 = event.object2
     if (( obj_1.name == "bullet" and obj_2.name == "destroy" ) or
        ( obj_1.name == "destroy" and obj_2.name == "bullet" ))then
@@ -75,32 +75,40 @@ local function onCollision( event )
   end
 end
 
-local function createBullet()
-  bullet = display.newImageRect( "Assets/Images/electrons.png", 10, 10)
-  bullet2 = display.newImageRect( "Assets/Images/electrons.png", 10, 10)
-  bullet2.x = centerX
-  bullet2.y = centerY
-  bullet2:setFillColor(0, 255, 255)
-  bullet:toBack()
-  bullet2:toBack()
-  uiGroup:insert( bullet )
-  uiGroup:insert( bullet2 )
-  physics.addBody( bullet, "dynamic", {isSensor = true, bounce = 0,
+local function createBullet( bullet, x, y, w, h )
+  local thisBullet = bullet
+
+  thisBullet = display.newImageRect( "Assets/Images/test.png", w, h)
+
+  thisBullet.x = x
+  thisBullet.y = y
+
+  --thisBullet:setFillColor(0, 233, 233)
+
+  thisBullet:toBack()
+
+  uiGroup:insert( thisBullet )
+
+  physics.addBody( thisBullet, "dynamic", {isSensor = true, bounce = 0,
                   box = { halfWidth=2, halfHeight=5 }} )
-  physics.addBody( bullet2, "dynamic", {isSensor = true, bounce = 0,
-                  box = { halfWidth=2, halfHeight=5 }} )
-  bullet.name = "bullet"
-  bullet2.name = "bullet"
-  bullet.isFixedRotation = true
-  bullet2.isFixedRotation = true
-  table.insert( bulletTables, bullet )
-  table.insert( bulletTables, bullet2 )
-  bullet2:applyForce( 0, -0.15, ship.x, ship.y + 10 )
-  --bullet:rotate( -0.5 )
-  --bullet2:applyForce( 0, 1, ship.x, ship.y + 10 )
-  --bullet2:rotate( 0.5 )
-  --display.remove( bullet )
+
+  thisBullet.name = "bullet"
+
+  thisBullet.isFixedRotation = true
+
+  table.insert( bulletTables, thisBullet )
+
+  thisBullet:applyForce( 0, -0.222, x, y)
+
+  return thisBullet
 end
+
+local function loopBullet()
+  bullet = createBullet( bullet, ship.x, ship.y - 30, 30, 30 )
+  bullet2 = createBullet( bullet2, ship.x + 20, ship.y, 2, 30 )
+  bullet3 = createBullet( bullet3, ship.x - 20, ship.y, 2, 30 )
+end
+
 function destroyBullets()
   local destroyBar = display.newRect(130, 5, 700, .5)
   destroyBar.name = "destroy"
@@ -124,8 +132,8 @@ function scene:show( event )
     --transition.to( background, { y = 1000, time = 5000 , onComplete = moveCoverBackground } )
   elseif ( phase == "did" ) then
     physics.start()
-    ship = moduleShip.create( ship, { x = centerX, y = centerY ,type = "figure" } )
-    bulletLoop = timer.performWithDelay( 180, createBullet, 0 )
+    ship = moduleShip.create( ship, { x = centerX, y = centerY ,type = "normal" } )
+    bulletLoop = timer.performWithDelay( 300, loopBullet, 0 )
 
     destroyBullets()
     Runtime:addEventListener("enterFrame", enterFrame)

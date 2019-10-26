@@ -87,6 +87,11 @@ function onKeyEvent( event )
         end
     end
 
+    if ( event.keyName == "numPad5" ) then
+        if event.phase == "up" then
+            composer.gotoScene( "Scripts.map" )
+        end
+    end
     -- IMPORTANT! Return false to indicate that this app is NOT overriding the received key
     -- This lets the operating system execute its default handling of the key
     return false

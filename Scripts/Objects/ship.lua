@@ -10,8 +10,8 @@ function M.create( ship, options )
   local options = options or {}
   local x = options.x or 160
   local y = options.y or 200
-  local w = options.w or 50
-  local h = options.h or 80
+  local w = options.w or 20
+  local h = options.h or 30
   local type = options.type or "normal"
   local name = options.name or "Dranger"
 
@@ -20,6 +20,7 @@ function M.create( ship, options )
 
   ship = display.newSprite( sheet , { frames={ 4 } } )
   ship.x, ship.y = x, y
+
   function onDrag( event )
 
   	local check = event.phase

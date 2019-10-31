@@ -4,11 +4,11 @@ local composer = require "composer"
 local widget = require "widget"
 local physics = require "physics"
 local moduleShip = require "Scripts.Objects.ship"
-local moduleShip = require "Scripts.Objects.ship"
+local moduleEnemy = require "Scripts.Objects.enemy"
 local moduleBullet = require "Scripts.Objects.bullet"
 physics.start()
 physics.setGravity( 0, 0 )
-physics.setDrawMode("hybrid")
+physics.setDrawMode("normal")
 -- Variables local to scene
 local scene = composer.newScene()
 
@@ -111,6 +111,10 @@ function scene:show( event )
   elseif ( phase == "did" ) then
     physics.start()
     ship = moduleShip.create( ship, {} )
+
+    --truyền modum
+    local enemy = moduleEnemy.create( enemy, {} )
+
 
     bulletLoop = timer.performWithDelay( 300, createBullet, 0 )
     destroyBullets()

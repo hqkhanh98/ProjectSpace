@@ -1,143 +1,94 @@
 -- Requirements
-
+local json = require( "json" )
 local composer = require "composer"
 local widget = require "widget"
 local physics = require "physics"
-local moduleShip = require "Scripts.Objects.ship"
-local moduleBullet = require "Scripts.Objects.bullet"
+
 physics.start()
 physics.setGravity( 0, 0 )
 physics.setDrawMode("normal")
 -- Variables local to scene
 local scene = composer.newScene()
 
-local background, background2, background3, ship, bulletLoop, bullet
-local bulletTables = {}
+local panel, btnUpgrade, btnShop
 
 local centerX, centerY = display.contentCenterX, display.contentCenterY
 local contentW, contentH = display.contentWidth, display.contentHeight
 local scrollSpeed = .8
+
 -- Init group
 local backGroup = display.newGroup()
 local uiGroup = display.newGroup()
-
+local mapGroup = display.newGroup()
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
   physics.pause()
-  background = display.newImageRect( backGroup, "Assets/Images/menu.png", 360, 480)
-  --background.alpha = .1
-  background.x = contentW * 0.5
-  background.y = contentH/2
 
-  background2 = display.newImageRect( backGroup, "Assets/Images/menu.png", 360, 480)
-  background2.x = contentW * 0.5
-  background2.y = background.y + 480
+  panel = display.newImageRect( backGroup, "Assets/Images/mapPanel.png", 360, 480 )
+  panel.x = centerX
+  panel.y = centerY --- 50
+  --panel.alpha = 1
 
-  background3 = display.newImageRect( backGroup, "Assets/Images/menu.png", 360, 480)
-  background3.x = contentW * 0.5
-  background3.y = background2.y + 480
+  btnUpgrade = display.newImageRect( uiGroup, "Assets/Images/GUI/Button.png", 100, 30 )
+  btnUpgrade.x = centerX
+  btnUpgrade.y = centerY + 100
 
+  btnUpgrade.text = display.newText( uiGroup, "UPGRADE", centerX, centerY, "Assets/Fonts/kenvector_future.ttf", 12 )
+  btnUpgrade.text.x = btnUpgrade.x
+  btnUpgrade.text.y = btnUpgrade.y
+  btnUpgrade.color = 0
+  btnShop = display.newImageRect( uiGroup, "Assets/Images/GUI/Button.png", 100, 30 )
+  btnShop.x = centerX
+  btnShop.y = centerY + 150
+
+  btnShop.text = display.newText( uiGroup, "SHOP", centerX, centerY, "Assets/Fonts/kenvector_future.ttf", 12 )
+  btnShop.text.x = btnShop.x
+  btnShop.text.y = btnShop.y
+  btnShop.color = 0
   sceneGroup:insert( backGroup )
+  sceneGroup:insert( mapGroup )
 end
 
 local function enterFrame(event)
   local elapsed = event.time
-
-  background.y = background.y + scrollSpeed
-  background2.y = background2.y + scrollSpeed
-  background3.y = background3.y + scrollSpeed
-
-  if ( background.y + background.contentWidth ) > 1040 then
-    background:translate( 0, -960 )
-  end
-  if ( background2.y + background2.contentWidth ) > 1040 then
-    background2:translate( 0, -960 )
-  end
-  if ( background3.y + background3.contentWidth ) > 1040 then
-    background3:translate( 0, -960 )
-  end
-
 end
 
-local function onCollision( event )
-  if ( event.phase == "began" ) then
-    local obj_1 = event.object1
+function transitionBtnUpgrade()
+   transition.from( btnUpgrade.text, { time = 1000, xScale = 0.888, yScale = 0.888, onComplete = transitionBtnUpgrade} )
+   btnUpgrade.text:setFillColor( btnUpgrade.color, btnUpgrade.color, btnUpgrade.color )
 
-    local obj_2 = event.object2
-    if (( obj_1.name == "bullet" and obj_2.name == "destroy" ) or
-       ( obj_1.name == "destroy" and obj_2.name == "bullet" ))then
-          if ( obj_1.name == "bullet" ) then --or thisBullet.name == obj_2.name ) then
-            obj_1:removeSelf()
-          elseif obj_2.name == "bullet" then
-            obj_2:removeSelf()
-          end
-    end
-  end
+   if btnUpgrade.color == 0 then btnUpgrade.color = 255
+   else
+      btnUpgrade.color = 0
+   end
 end
 
-local function createBullet( bullet, x, y, w, h )
-  local thisBullet = bullet
+function transitionBtnShop()
 
-  thisBullet = display.newImageRect( "Assets/Images/test.png", w, h)
+  transition.from( btnShop.text, { time = 1000, xScale = 0.888, yScale = 0.888, onComplete = transitionBtnShop} )
 
-  thisBullet.x = x
-  thisBullet.y = y
+  btnShop.text:setFillColor( btnShop.color, btnShop.color, btnShop.color )
 
-  --thisBullet:setFillColor(0, 233, 233)
-
-  thisBullet:toBack()
-
-  uiGroup:insert( thisBullet )
-
-  physics.addBody( thisBullet, "dynamic", {isSensor = true, bounce = 0,
-                  box = { halfWidth=2, halfHeight=5 }} )
-
-  thisBullet.name = "bullet"
-
-  thisBullet.isFixedRotation = true
-
-  table.insert( bulletTables, thisBullet )
-
-  thisBullet:applyForce( 0, -0.222, x, y)
-
-  return thisBullet
+   if btnShop.color == 0 then btnShop.color = 255
+   else
+      btnShop.color = 0
+   end
 end
 
-local function loopBullet()
-  bullet = createBullet( bullet, ship.x, ship.y - 30, 30, 30 )
-  bullet2 = createBullet( bullet2, ship.x + 20, ship.y, 2, 30 )
-  bullet3 = createBullet( bullet3, ship.x - 20, ship.y, 2, 30 )
-end
-
-function destroyBullets()
-  local destroyBar = display.newRect(130, 5, 700, .5)
-  destroyBar.name = "destroy"
-  physics.addBody( destroyBar, "static", {bounce = 0} )
-end
 
 function scene:show( event )
   local phase = event.phase
   if ( phase == "will" ) then
-    local json = require( "json" )
-    local filePath = system.pathForFile( "Scripts/Sheets/my_galaxy.json" )
-    local f = io.open( filePath, "r" )
-    local emitterData = f:read( "*a" )
-    f:close()
 
-    local emitterParams = json.decode( emitterData)
-
-    local emitter = display.newEmitter( emitterParams )
-    emitter.x = centerX
-    emitter.y = centerY
-    --transition.to( background, { y = 1000, time = 5000 , onComplete = moveCoverBackground } )
+    transition.from( panel, { alpha = 0, time = 1000 } )
+    transition.from( panel.title, { alpha = 0, time = 1000 } )
+    transitionBtnUpgrade()
+    transitionBtnShop()
   elseif ( phase == "did" ) then
     physics.start()
-    ship = moduleShip.create( ship, { x = centerX, y = centerY ,type = "normal" } )
-    bulletLoop = timer.performWithDelay( 300, loopBullet, 0 )
 
-    destroyBullets()
+    --ship.level = 100
     Runtime:addEventListener("enterFrame", enterFrame)
-    Runtime:addEventListener( "collision", onCollision )
   end
 end
 

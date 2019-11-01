@@ -1,8 +1,8 @@
 -- Requirements
-local json = require( "json" )
+local json = require "json"
 local composer = require "composer"
-local widget = require "widget"
 local physics = require "physics"
+local moduleMap = require "Scripts.map"
 
 physics.start()
 physics.setGravity( 0, 0 )
@@ -10,7 +10,7 @@ physics.setDrawMode("normal")
 -- Variables local to scene
 local scene = composer.newScene()
 
-local panel, btnUpgrade, btnShop
+local panel, btnUpgrade, btnShop, map
 
 local centerX, centerY = display.contentCenterX, display.contentCenterY
 local contentW, contentH = display.contentWidth, display.contentHeight
@@ -20,6 +20,7 @@ local scrollSpeed = .8
 local backGroup = display.newGroup()
 local uiGroup = display.newGroup()
 local mapGroup = display.newGroup()
+
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
   physics.pause()
@@ -27,11 +28,11 @@ function scene:create( event )
   panel = display.newImageRect( backGroup, "Assets/Images/mapPanel.png", 360, 480 )
   panel.x = centerX
   panel.y = centerY --- 50
-  --panel.alpha = 1
+  panel.alpha = 1
 
   btnUpgrade = display.newImageRect( uiGroup, "Assets/Images/GUI/Button.png", 100, 30 )
   btnUpgrade.x = centerX
-  btnUpgrade.y = centerY + 100
+  btnUpgrade.y = centerY + 150
 
   btnUpgrade.text = display.newText( uiGroup, "UPGRADE", centerX, centerY, "Assets/Fonts/kenvector_future.ttf", 12 )
   btnUpgrade.text.x = btnUpgrade.x
@@ -39,14 +40,19 @@ function scene:create( event )
   btnUpgrade.color = 0
   btnShop = display.newImageRect( uiGroup, "Assets/Images/GUI/Button.png", 100, 30 )
   btnShop.x = centerX
-  btnShop.y = centerY + 150
+  btnShop.y = centerY + 200
 
   btnShop.text = display.newText( uiGroup, "SHOP", centerX, centerY, "Assets/Fonts/kenvector_future.ttf", 12 )
   btnShop.text.x = btnShop.x
   btnShop.text.y = btnShop.y
   btnShop.color = 0
+
+
+  map = moduleMap.create( {x = centerX, y = centerY - 30} )
+
+  --mapGroup:insert( map )
   sceneGroup:insert( backGroup )
-  sceneGroup:insert( mapGroup )
+  sceneGroup:insert( map )
 end
 
 local function enterFrame(event)

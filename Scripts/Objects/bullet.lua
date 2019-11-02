@@ -50,8 +50,7 @@ function M.create( options )
     local bullet = bullet.display
     bullet.isFixedRotation = true
     bullet.isBullet = true
-
-    bullet:applyForce( 0, -6,fx, fy )
+    bullet:applyForce( 0, -6, fx, fy )
   end
 
   function destroyBullet(object)

@@ -91,9 +91,9 @@ function public.create_mem()
 		hudFrame.x = right - hudFrame.contentWidth/2 - 5
 		hudFrame.y = top + hudFrame.contentHeight/2 + 5
 		mMemLabel.x = hudFrame.x - hudFrame.contentWidth/2 - 20
-		mMemLabel.y = hudFrame.y
+		mMemLabel.y = hudFrame.y - 10
 		tMemLabel.x = hudFrame.x - hudFrame.contentWidth/2 - 20
-		tMemLabel.y = hudFrame.y + 10
+		tMemLabel.y = hudFrame.y 
 
 		-- Fill in current main memory usage
 		collectgarbage("collect") -- Collect garbage every frame to get 'true' current memory usage

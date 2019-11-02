@@ -1,5 +1,8 @@
 -- Requirements
 local composer = require "composer"
+local meter = require "com.meter"
+meter.create_fps()
+meter.create_mem()
 local ship = require "Scripts.Objects.ship"
 -- Variables local to scene
 local scene = composer.newScene()

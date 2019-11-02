@@ -34,7 +34,7 @@ function M.create( ship, options )
   		-- Move the ship to the new touch position
   		ship.x = ( event.x - ship.touchOffsetX )
   	  ship.y = event.y - ship.touchOffsetY
-      print(event.x - ship.touchOffsetX)
+
   	elseif ( "ended" == check or "cancelled" == check ) then
   		-- Release touch focus on the ship
   		--display.currentStage:setFocus( nil )

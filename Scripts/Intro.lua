@@ -103,8 +103,12 @@ function scene:hide( event )
   if ( phase == "will" ) then
 
   elseif ( phase == "did" ) then
-    Runtime:removeEventListener("enterFrame", enterFrame)
 
+    --xóa các cái gì đã tạo thì phải xóa
+    Runtime:removeEventListener("enterFrame", enterFrame)
+    Runtime:removeEventListener("key", onKeyEvent)
+    playText:removeEventListener("tap", goToMenu)
+    title:removeSelf()
     playText:removeSelf()
     emitter:removeSelf()
   end

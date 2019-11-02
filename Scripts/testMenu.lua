@@ -21,7 +21,7 @@ local scrollSpeed = .8
 -- Init group
 local backGroup = display.newGroup()
 local uiGroup = display.newGroup()
-
+local gameGroup = display.newGroup()
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
   physics.pause()
@@ -38,7 +38,14 @@ function scene:create( event )
   background3.x = contentW * 0.5
   background3.y = background2.y + 480
 
+  ship = moduleShip.create( ship, {} )
+  enemy = moduleEnemy.create( enemy, {} )
+
+  gameGroup:insert(ship)
+--  gameGroup:insert(enemy)
+
   sceneGroup:insert( backGroup )
+  sceneGroup:insert( gameGroup )
 end
 
 local function enterFrame(event)
@@ -63,7 +70,7 @@ end
 local function onCollision( event )
   if ( event.phase == "began" ) then
     local obj_1 = event.object1
-    print(obj_1.name)
+
     local obj_2 = event.object2
     if (( obj_1.name == "bullet" and obj_2.name == "destroy" ) or
        ( obj_1.name == "destroy" and obj_2.name == "bullet" ))then
@@ -78,23 +85,23 @@ end
 
 local function createBullet()
   bullet = moduleBullet.create( bullet, { x = ship.x, y = ship.y } )
-  bullet2 = moduleBullet.create( bullet, { x = ship.x + 10, y = ship.y } )
+  --bullet2 = moduleBullet.create( bullet, { x = ship.x + 10, y = ship.y } )
   bullet:toBack()
-  bullet2:toBack()
+  --bullet2:toBack()
   uiGroup:insert( bullet )
-  uiGroup:insert( bullet2 )
+  --uiGroup:insert( bullet2 )
   physics.addBody( bullet, "dynamic", {isSensor = true, bounce = 0,
                   box = { halfWidth=2, halfHeight=5 }} )
-  physics.addBody( bullet2, "dynamic", {isSensor = true, bounce = 0,
-                  box = { halfWidth=2, halfHeight=5 }} )
+  --physics.addBody( bullet2, "dynamic", {isSensor = true, bounce = 0,
+  --                box = { halfWidth=2, halfHeight=5 }} )
   bullet.name = "bullet"
-  bullet2.name = "bullet"
+  --bullet2.name = "bullet"
   bullet.isFixedRotation = true
-  bullet2.isFixedRotation = true
+--  bullet2.isFixedRotation = true
   table.insert( bulletTables, bullet )
-  table.insert( bulletTables, bullet2 )
+--  table.insert( bulletTables, bullet2 )
   bullet:applyLinearImpulse( 0, -0.01, ship.x, ship.y + 10 )
-  bullet2:applyLinearImpulse( 0, -0.01, ship.x, ship.y + 10 )
+--  bullet2:applyLinearImpulse( 0, -0.01, ship.x, ship.y + 10 )
   --display.remove( bullet )
 end
 function destroyBullets()
@@ -110,10 +117,9 @@ function scene:show( event )
     --transition.to( background, { y = 1000, time = 5000 , onComplete = moveCoverBackground } )
   elseif ( phase == "did" ) then
     physics.start()
-    ship = moduleShip.create( ship, {} )
 
     --truyền modum
-    local enemy = moduleEnemy.create( enemy, {} )
+
 
 
     bulletLoop = timer.performWithDelay( 300, createBullet, 0 )

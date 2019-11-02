@@ -1,109 +1,56 @@
 local E = {}
-local enemyns = require "Scripts.Sheets.ship-blue"
-local moduleBullet = require "Scripts.Objects.bullet"
-function E.create( enemy, options )
-    local options = options or {}
-    local x = options.x or 100
-    local y = options.y or -10
-    local w = options.w or 50
-    local h = options.h or 80
-    local sl = options.sl or 2
-    local hp = options.hp or 1
-    local name = options.name or "giant"
 
-    enemyTable = {}
+local physics
+local function physicsCreate( sleep, gx, gy )
+  local sleep = sleep or 0
+  local gx = gx or 0
+  local gy = gy or 0
+  physics = require "physics"
+  physics.start( sleep )
+  physics.setGravity( gx, gy )
+end
 
-    local physics = require "physics"
-    physics.start()
-
-    local path = options.path or "Assets/Images/ship-blue.png"
-    local sheet = graphics.newImageSheet( path, enemyns:getSheet() )
-
-    function createEnemy1()
-      enemy = display.newSprite( sheet , { frames={4} } )
-      enemy.x = x
-      enemy.y = y
-      enemy.hp = hp
-      enemy.name = "enemy"
-      physics.addBody( enemy, "dynamic")
-      enemy:scale(0.7, 0.7)
-
-      enemy1 = display.newSprite( sheet , { frames={  4 } } )
-      enemy1.x = 230
-      enemy1.y = -10
-      enemy1.hp = 1
-      enemy1.name = "enemy"
-      physics.addBody( enemy1, "dynamic")
-      enemy1:scale(0.7, 0.7)
-      table.insert( enemyTable, enemy )
-      table.insert( enemyTable, enemy1 )
-      transition.to( enemy,  { tag = "enemy" ,time = 600,  y = 150, onComplete = turnLeftEnemy })
-      transition.to( enemy1, { tag = "enemy" ,time = 600, y = 150 , onComplete = turnRightEnemy1 })
-    end
-    enemyLoop = timer.performWithDelay( 500, createEnemy1, 0)
-    Runtime:addEventListener( "collision", onCollision )
-return enemy
+local function physicsPause()
+  physics.pause()
 end
 
 
 
+function E.create( options )
+  local options = options or {}
+  local x = options.x or 150
+  local y = options.y or 150
+  local height = options.h or 30
+  local width = options.w or 30
+  local type = options.type or "normal"
 
-function turnLeftEnemy(obj)
+  local enemy = display.newGroup()
+  enemy.display = display.newCircle( enemy, x, y, 10 )
+  enemy.display.name = "enemy"
+  enemy.display.hp = 4
+  physicsCreate()
+  physics.addBody( enemy.display, "dynamic" )
 
-  transition.to( obj,  { tag = "enemy" ,time = 400, x = 0, onComplete = clear} )
-end
-
-function turnRightEnemy1(obj)
-
-  transition.to( obj,  { tag = "enemy" ,time = 400, x = 300, onComplete = clear } )
-end
-
-function clear(obj)
-  if obj == nil then
-  else
-    print("xoa")
-    display.remove( obj )
-    obj = nil
-  end
-end
-
-function onCollision(event)
-  if ( event.phase == "began" ) then
-
-      local obj1 = event.object1
-      local obj2 = event.object2
-    --  print("Bat dau")
-       -- laser và tiểu hành tinh
-      if ( ( obj1.name == "enemy" and obj2.name == "bullet" ) or
-      ( obj1.name == "bullet" and obj2.name == "enemy" ) )
-      then
-          print("Va cham")
-          --xóa bỏ
-          for i = #enemyTable, 1, -1 do
-              if ( enemyTable[i] == obj1 or enemyTable[i] == obj2 ) then
-                  print(enemyTable[i].hp )
-                  if enemyTable[i].hp > 0  then
-                    enemyTable[i].hp = enemyTable[i].hp - 1
-                    display.remove( obj2 )
-                    obj2 = nil
-                    print("tru mau")
-                  elseif enemyTable[i].hp == 0 then
-                    table.remove( enemyTable, i )
-                    transition.cancel( obj1 )
-
-                    display.remove( obj1 )
-                    display.remove( obj2 )
-                    obj1 = nil
-                    obj2 = nil
-                    print("Xoa bo")
-                  end
-              end
-          end
-
+  function enemy.display:collision( event )
+    if ( event.phase == "began" ) then
+      local enemy = event.target
+      if enemy.name == "enemy" then
+        if enemy.hp > 0 then
+          enemy.hp = enemy.hp - 1
+        else
+          destroy(enemy)
+        end
       end
-    --  print("ket thuc")
+    end
   end
-end
+  enemy.display:addEventListener('collision')
 
+    function destroy( object )
+      object:removeEventListener('collision')
+      display.remove( object )
+      object = nil
+    end
+  return enemy
+end
 
 return E

@@ -28,7 +28,7 @@ function M.create( options )
   local ship = display.newGroup()
   ship.display = display.newSprite( ship, sheet , { frames={ 4 } } )
   ship.display.x, ship.display.y = x, y
-  ship.display.level = 3
+  ship.display.level = 4
   ship.display.speed = 300
   ship.canvas = display.newRect( ship, display.contentCenterX, display.contentCenterY, 360, 480 )
   ship.canvas.alpha = 0.1
@@ -53,12 +53,32 @@ function M.create( options )
   	return true
   end
   ship.canvas:addEventListener( 'touch' )
+	ship.bullets = {}
+	function shootLoop()
+			local fx, fy
+			local number = 1
+			local len = 0
+			local gfx = 0
+			local gfy = 0
+			for i = 1, ship.display.level do
+				if i == 2 then
+					number = -1
+					len = len + 20
+				elseif i == 4 then
 
-  function ship.display:shoot()
-    bullet = bullet.create({x = ship.display.x, y = ship.display.y}).display
-    transition.to( bullet, { y = 0, time = 1000 } )
-    ship:insert(bullet)
-  end
+				else
+					number = 1
+				end
+				ship.bullets[i] = bullet.create({x = ship.display.x + (number * len), y = ship.display.y}).display
+			  ship.bullets[i].shoot( 160, 240 )
+				--ship.bullets[i]:setLinearVelocity(-400, 0)
+				ship:insert(ship.bullets[i])
+
+			end
+	end
+
+	ship.loop = timer.performWithDelay( ship.display.speed, shootLoop, 0 )
+
 
   function destroyShip(object)
     object:removeEventListener('collision')

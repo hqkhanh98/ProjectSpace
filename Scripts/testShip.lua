@@ -7,7 +7,7 @@ local scene = composer.newScene()
 function scene:create( event )
   local sceneGroup = self.view -- add display objects to this group
   ship = ship.create()
-  ship.display.shoot()
+
 end
 
 local function enterFrame(event)

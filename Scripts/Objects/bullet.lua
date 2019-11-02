@@ -20,17 +20,15 @@ function M.create( options )
   local options = options or {}
   local x = options.x or 160
   local y = options.y or 200
-  local w = options.w or 15
+  local w = options.w or 10
   local h = options.h or 25
   local type = options.type or "normal"
 
   local path = options.path or "Assets/Images/ship-blue.png"
-  local sheet = graphics.newImageSheet( path, incShip:getSheet() )
   local bullet = display.newGroup()
 
-  bullet.display = display.newSprite( sheet , { frames={ 11 } } )
-  bullet.display:scale(0.8, 0.8)
-  bullet.display.x, bullet.display.y = x, y - 50
+  bullet.display = display.newImageRect( bullet, "Assets/Images/electrons.png", w, h )
+  bullet.display.x, bullet.display.y = x, y
   physicsCreate()
   bullet.display.name = "bullet"
 
@@ -39,16 +37,26 @@ function M.create( options )
     if event.phase == "began" then
       local bullet = event.target
       local other = event.other
-      if bullet.name == "bullet" then
-        destroyBullet(bullet)
-      else
+      if bullet.name == "bullet" and other.name == "bullet" then
 
+      else
+        destroyBullet(bullet)
       end
     end
   end
   bullet.display:addEventListener('collision')
+
+  function bullet.display:shoot( fx, fy )
+    local bullet = bullet.display
+    bullet.isFixedRotation = true
+    bullet.isBullet = true
+
+    bullet:applyForce( 0, -6,fx, fy )
+  end
+
   function destroyBullet(object)
     object:removeEventListener('collision')
+    --physics.removeBody( object )
     display.remove( object )
     object = nil
   end

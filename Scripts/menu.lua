@@ -60,7 +60,7 @@ local function enterFrame(event)
 end
 
 function transitionBtnUpgrade()
-   transition.from( btnUpgrade.text, { time = 1000, xScale = 0.888, yScale = 0.888, onComplete = transitionBtnUpgrade} )
+   transition.from( btnUpgrade.text, {tag = "button", time = 1000, xScale = 0.888, yScale = 0.888, onComplete = transitionBtnUpgrade} )
    btnUpgrade.text:setFillColor( btnUpgrade.color, btnUpgrade.color, btnUpgrade.color )
 
    if btnUpgrade.color == 0 then btnUpgrade.color = 255
@@ -71,7 +71,7 @@ end
 
 function transitionBtnShop()
 
-  transition.from( btnShop.text, { time = 1000, xScale = 0.888, yScale = 0.888, onComplete = transitionBtnShop} )
+  transition.from( btnShop.text, {tag = "button", time = 1000, xScale = 0.888, yScale = 0.888, onComplete = transitionBtnShop} )
 
   btnShop.text:setFillColor( btnShop.color, btnShop.color, btnShop.color )
 
@@ -86,8 +86,8 @@ function scene:show( event )
   local phase = event.phase
   if ( phase == "will" ) then
 
-    transition.from( panel, { alpha = 0, time = 1000 } )
-    transition.from( panel.title, { alpha = 0, time = 1000 } )
+    transition.from( panel, { tag = "button", alpha = 0, time = 1000 } )
+    transition.from( panel.title, { tag = "button",alpha = 0, time = 1000 } )
     transitionBtnUpgrade()
     transitionBtnShop()
   elseif ( phase == "did" ) then
@@ -101,9 +101,22 @@ end
 function scene:hide( event )
   local phase = event.phase
   if ( phase == "will" ) then
+    transition.cancel("button")
+    map.clearAll()
+    display.remove(panel)
+    display.remove(btnShop.text)
+    display.remove(btnShop)
+    display.remove(btnUpgrade)
+    display.remove(btnUpgrade.text)
 
+    btnShop.text = nil
+    btnUpgrade.text = nil
+    panel = nil
+    btnShop = nil
+    btnUpgrade = nil
   elseif ( phase == "did" ) then
     Runtime:removeEventListener("enterFrame", enterFrame)
+
   end
 end
 

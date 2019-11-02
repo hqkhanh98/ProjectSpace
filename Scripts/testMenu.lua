@@ -4,7 +4,7 @@ local composer = require "composer"
 local widget = require "widget"
 local physics = require "physics"
 local moduleShip = require "Scripts.Objects.ship"
-local enemy = require "Scripts.Objects.enemy"
+local enemies = require "Scripts.Objects.enemies"
 local moduleBullet = require "Scripts.Objects.bullet"
 physics.start()
 physics.setGravity( 0, 0 )
@@ -40,10 +40,11 @@ function scene:create( event )
 
   ship = moduleShip.create( ship, {} )
   --enemy:createEnemyNormal()
-  enemy = enemy.create({ x = 100, y = display.contentCenterY, w = 100 })
+  --enemy = enemy.create({ x = 100, y = display.contentCenterY, w = 100 })
   gameGroup:insert(ship)
   --gameGroup:insert(enemy)
-
+  local params = { amount = 5, x = 150, y = 150 }
+  enemies = enemies.newLure(params)
   sceneGroup:insert( backGroup )
   sceneGroup:insert( gameGroup )
 end

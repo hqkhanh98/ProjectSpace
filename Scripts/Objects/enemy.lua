@@ -29,17 +29,21 @@ function E.create( options )
   enemy.display.name = "enemy"
   enemy.display.hp = 4
   physicsCreate()
-  physics.addBody( enemy.display, "dynamic" )
+  physics.addBody( enemy.display, "dynamic", { isSensor = true } )
 
   function enemy.display:collision( event )
     if ( event.phase == "began" ) then
       local enemy = event.target
-      if enemy.name == "enemy" then
+      local other = event.other
+
+      if enemy.name == "enemy" and other.name == "bullet" then
         if enemy.hp > 0 then
           enemy.hp = enemy.hp - 1
         else
           destroy(enemy)
         end
+      elseif enemy.name == "enemy" and other.name == "enemy" then
+        print("cham")
       end
     end
   end

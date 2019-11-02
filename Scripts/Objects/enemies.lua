@@ -7,21 +7,31 @@ function display.newGroup2( insertInto )
 end
   function M.newLure(options)
     local options = options or {}
-    local amount = options.amount or 5
-    local x = options.x or 10
-    local y = options.y or 10
-    local speed = options.speed or 10
+    local amount = options.amount or 3
+    local x = options.x or 50
+    local y = options.y or 50
+    local speed = options.speed or 5000
     local enemies = display.newGroup()
     enemies.lure = {}
-    local x1 = display.contentCenterX
-    local y1 = display.contentCenterY
-    for i = 1, 3 do
 
-      enemies.enemy = enemy.create({ x = x1, y = y1 })
-      enemies.enemy = display.newGroup2(enemies)
-      x1 = x1 + 40
-      y1 = y1 + 50
+    local directX, directY = 0, 0
+
+    function move()
+      if enemies.direct == "left" then
+        x = 360
+        directX = 0
+        directY = 480
+      elseif enemies.direct == "right" then
+        x = 0
+        directX = 360
+        directY = 480
+      end
+      enemies.enemy = enemy.create({ x = x, y = y }).display
+      enemies:insert(enemies.enemy)
+      transition.to(enemies.enemy, {time = speed , x = directX, y = directY } )
     end
+
+    enemies.loop = timer.performWithDelay( speed, move, amount)
 
     return enemies
   end

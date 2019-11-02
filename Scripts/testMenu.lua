@@ -43,8 +43,9 @@ function scene:create( event )
   --enemy = enemy.create({ x = 100, y = display.contentCenterY, w = 100 })
   gameGroup:insert(ship)
   --gameGroup:insert(enemy)
-  local params = { amount = 5, x = 150, y = 150 }
+  local params = { amount = 3, x = 50, y = 50 }
   enemies = enemies.newLure(params)
+
   sceneGroup:insert( backGroup )
   sceneGroup:insert( gameGroup )
 end

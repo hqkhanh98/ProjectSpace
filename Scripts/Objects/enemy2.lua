@@ -40,7 +40,7 @@ function E.create( enemy, options )
       transition.to( enemy,  { tag = "enemy" ,time = 600,  y = 150, onComplete = turnLeftEnemy })
       transition.to( enemy1, { tag = "enemy" ,time = 600, y = 150 , onComplete = turnRightEnemy1 })
     end
-    enemyLoop = timer.performWithDelay( 500, createEnemy1, 0)
+    enemyLoop = timer.performWithDelay( 100, createEnemy1, 0)
     Runtime:addEventListener( "collision", onCollision )
 return enemy
 end

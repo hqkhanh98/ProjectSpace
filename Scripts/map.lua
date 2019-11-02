@@ -1,5 +1,5 @@
 local widget = require "widget"
-
+local composer = require "composer"
 local M = {}
 
 local map = display.newGroup()
@@ -17,6 +17,7 @@ function M.create( options )
 
 
   map.levelGroup = display.newGroup2( map )
+	map.lineLevels = display.newGroup2( map )
   map.display = display.newImageRect( "Assets/Images/panel.png", 230, 250)
   map.levels = {}
 
@@ -42,7 +43,12 @@ function M.create( options )
   )
 
   -- Create a image and insert it into the scroll view
-
+	-- local line = display.newLine( map.levelGroup, map.levels[1].x, map.levels[1].y, map.levels[2].x, map.levels[2].y )
+	-- line:toFront()
+	-- print( "x1 : "..levels[1].x.." y1 : "..levels[1].y.." x2 : "..levels[2].x.." y2 : "..levels[2].y )
+	for i = 1, #map.levels do
+		map.levels[i]:addEventListener("tap", onTap)
+	end
   scrollView:insert( map.levelGroup )
 
   scrollView:scrollTo( "bottom", { time=50 } )
@@ -61,7 +67,7 @@ function createLevels( levels, x, y, max )
       levels[i] = display.newImageRect( map.levelGroup, "Assets/Images/level.png", 50, 50 )
       levels[i].x, levels[i].y, levels[i].id = x, y, title
       levels[i].title = display.newText( map.levelGroup, title, levels[i].x, levels[i].y, "Assets/Fonts/kenvector_future.ttf", 16 )
-      print(levels[i].id)
+
       title = title - 1
 
       y = y + 100
@@ -70,11 +76,25 @@ function createLevels( levels, x, y, max )
         length = length -1
       end
   end
+	function map:clearAll()
+		for i = 1, #map.levels do
+			map.levels[i]:removeEventListener("tap", onTap)
+			display.remove( map.levels[i].title )
+			map.levels[i].title = nil
+			display.remove(map.levels[i])
+			map.levels[i] = nil
+			display.remove( map.display )
+			map.display = nil
+		end
+	end
   return levels
 end
 
-function scrollViewMap( levels )
-
+function onTap( event )
+	print("Go to scene " .. event.target.id)
+	composer.gotoScene( "Scripts.game" )
 end
+
+
 
 return M
